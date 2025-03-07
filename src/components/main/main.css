@@ -1,0 +1,42 @@
+.hero {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
+  }
+  
+  .card {
+    border: none;
+  }
+  
+  .card-img {
+    height: 500px;
+    object-fit: cover;
+  }
+  
+  .card-title {
+    font-size: 3.25rem;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .card-text {
+    font-size: 1.25rem;
+  }
+
+
+
+  .card-img-overlay {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: rgba(155, 155, 155, 0.3); /* Optional: Light background overlay */
+  }
+  
+
+  
+  @media (max-width: 576px) {
+    .card-text {
+      display: none; /* Hide text on small screens */
+    }
+  }
+  
