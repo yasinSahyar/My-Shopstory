@@ -2,8 +2,24 @@ import React from "react";
 import { Footer, Navbar } from "../components";
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 const Checkout = () => {
   const state = useSelector((state) => state.handleCart);
+  const [user, setUser] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchUser = async () => {
+      const token = localStorage.getItem('token');
+      if (token) {
+        const response = await axios.get('http://localhost:5000/api/user', {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        setUser(response.data);
+      }
+    };
+    fetchUser();
+  }, []);
 
   const EmptyCart = () => {
     return (
@@ -27,50 +43,24 @@ const Checkout = () => {
     state.map((item) => {
       return (subtotal += item.price * item.qty);
     });
-
     state.map((item) => {
       return (totalItems += item.qty);
     });
+
     return (
       <>
         <div className="container py-5">
           <div className="row my-4">
-            <div className="col-md-5 col-lg-4 order-md-last">
-              <div className="card mb-4">
-                <div className="card-header py-3 bg-light">
-                  <h5 className="mb-0">Order Summary</h5>
-                </div>
-                <div className="card-body">
-                  <ul className="list-group list-group-flush">
-                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
-                      Products ({totalItems})<span>${Math.round(subtotal)}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center px-0">
-                      Shipping
-                      <span>${shipping}</span>
-                    </li>
-                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
-                      <div>
-                        <strong>Total amount</strong>
-                      </div>
-                      <span>
-                        <strong>${Math.round(subtotal + shipping)}</strong>
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </div>
             <div className="col-md-7 col-lg-8">
               <div className="card mb-4">
                 <div className="card-header py-3">
                   <h4 className="mb-0">Billing address</h4>
                 </div>
                 <div className="card-body">
-                  <form className="needs-validation" novalidate>
+                  <form className="needs-validation" noValidate>
                     <div className="row g-3">
                       <div className="col-sm-6 my-1">
-                        <label for="firstName" className="form-label">
+                        <label htmlFor="firstName" className="form-label">
                           First name
                         </label>
                         <input
@@ -78,15 +68,15 @@ const Checkout = () => {
                           className="form-control"
                           id="firstName"
                           placeholder=""
+                          defaultValue={user?.full_name.split(' ')[0] || ''}
                           required
                         />
                         <div className="invalid-feedback">
                           Valid first name is required.
                         </div>
                       </div>
-
                       <div className="col-sm-6 my-1">
-                        <label for="lastName" className="form-label">
+                        <label htmlFor="lastName" className="form-label">
                           Last name
                         </label>
                         <input
@@ -94,15 +84,15 @@ const Checkout = () => {
                           className="form-control"
                           id="lastName"
                           placeholder=""
+                          defaultValue={user?.full_name.split(' ')[1] || ''}
                           required
                         />
                         <div className="invalid-feedback">
                           Valid last name is required.
                         </div>
                       </div>
-
                       <div className="col-12 my-1">
-                        <label for="email" className="form-label">
+                        <label htmlFor="email" className="form-label">
                           Email
                         </label>
                         <input
@@ -110,16 +100,15 @@ const Checkout = () => {
                           className="form-control"
                           id="email"
                           placeholder="you@example.com"
+                          defaultValue={user?.email || ''}
                           required
                         />
                         <div className="invalid-feedback">
-                          Please enter a valid email address for shipping
-                          updates.
+                          Please enter a valid email address for shipping updates.
                         </div>
                       </div>
-
                       <div className="col-12 my-1">
-                        <label for="address" className="form-label">
+                        <label htmlFor="address" className="form-label">
                           Address
                         </label>
                         <input
@@ -133,11 +122,9 @@ const Checkout = () => {
                           Please enter your shipping address.
                         </div>
                       </div>
-
-                      <div className="col-12">
-                        <label for="address2" className="form-label">
-                          Address 2{" "}
-                          <span className="text-muted">(Optional)</span>
+                      <div className="col-12 my-1">
+                        <label htmlFor="address2" className="form-label">
+                          Address 2 (Optional)
                         </label>
                         <input
                           type="text"
@@ -146,12 +133,10 @@ const Checkout = () => {
                           placeholder="Apartment or suite"
                         />
                       </div>
-
                       <div className="col-md-5 my-1">
-                        <label for="country" className="form-label">
+                        <label htmlFor="country" className="form-label">
                           Country
                         </label>
-                        <br />
                         <select className="form-select" id="country" required>
                           <option value="">Choose...</option>
                           <option>Finland</option>
@@ -160,12 +145,10 @@ const Checkout = () => {
                           Please select a valid country.
                         </div>
                       </div>
-
                       <div className="col-md-4 my-1">
-                        <label for="state" className="form-label">
+                        <label htmlFor="state" className="form-label">
                           State
                         </label>
-                        <br />
                         <select className="form-select" id="state" required>
                           <option value="">Choose...</option>
                           <option>Helsinki</option>
@@ -174,9 +157,8 @@ const Checkout = () => {
                           Please provide a valid state.
                         </div>
                       </div>
-
                       <div className="col-md-3 my-1">
-                        <label for="zip" className="form-label">
+                        <label htmlFor="zip" className="form-label">
                           Zip
                         </label>
                         <input
@@ -191,14 +173,11 @@ const Checkout = () => {
                         </div>
                       </div>
                     </div>
-
                     <hr className="my-4" />
-
                     <h4 className="mb-3">Payment</h4>
-
                     <div className="row gy-3">
                       <div className="col-md-6">
-                        <label for="cc-name" className="form-label">
+                        <label htmlFor="cc-name" className="form-label">
                           Name on card
                         </label>
                         <input
@@ -208,16 +187,13 @@ const Checkout = () => {
                           placeholder=""
                           required
                         />
-                        <small className="text-muted">
-                          Full name as displayed on card
-                        </small>
+                        <small className="text-muted">Full name as displayed on card</small>
                         <div className="invalid-feedback">
                           Name on card is required
                         </div>
                       </div>
-
                       <div className="col-md-6">
-                        <label for="cc-number" className="form-label">
+                        <label htmlFor="cc-number" className="form-label">
                           Credit card number
                         </label>
                         <input
@@ -231,9 +207,8 @@ const Checkout = () => {
                           Credit card number is required
                         </div>
                       </div>
-
                       <div className="col-md-3">
-                        <label for="cc-expiration" className="form-label">
+                        <label htmlFor="cc-expiration" className="form-label">
                           Expiration
                         </label>
                         <input
@@ -247,9 +222,8 @@ const Checkout = () => {
                           Expiration date required
                         </div>
                       </div>
-
                       <div className="col-md-3">
-                        <label for="cc-cvv" className="form-label">
+                        <label htmlFor="cc-cvv" className="form-label">
                           CVV
                         </label>
                         <input
@@ -264,16 +238,32 @@ const Checkout = () => {
                         </div>
                       </div>
                     </div>
-
                     <hr className="my-4" />
-
-                    <button
-                      className="w-100 btn btn-primary "
-                      type="submit" disabled
-                    >
-                      Continue to checkout
+                    <button className="w-100 btn btn-primary btn-lg" type="submit" disabled>
+                    Go to pay
                     </button>
                   </form>
+                </div>
+              </div>
+            </div>
+            <div className="col-md-5 col-lg-4 order-md-last">
+              <div className="card mb-4">
+                <div className="card-header py-3 bg-light">
+                  <h5 className="mb-0">Order Summary</h5>
+                </div>
+                <div className="card-body">
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+                      Products ({totalItems})<span>${Math.round(subtotal)}</span>
+                    </li>
+                    <li className="list-group-item d-flex justify-content-between align-items-center px-0">
+                      Shipping<span>${shipping}</span>
+                    </li>
+                    <li className="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+                      <div><strong>Total amount</strong></div>
+                      <span><strong>${Math.round(subtotal + shipping)}</strong></span>
+                    </li>
+                  </ul>
                 </div>
               </div>
             </div>
@@ -282,6 +272,7 @@ const Checkout = () => {
       </>
     );
   };
+
   return (
     <>
       <Navbar />
