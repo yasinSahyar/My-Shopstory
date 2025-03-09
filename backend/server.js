@@ -3,10 +3,14 @@ const mysql = require('mysql2');
 const cors = require('cors');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const path = require('path'); // path modülünü ekliyoruz
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+// Statik dosyaları servis etmek için public dizinini ekliyoruz
+app.use(express.static(path.join(__dirname, 'public')));
 
 const db = mysql.createConnection({
   host: 'localhost',
@@ -58,39 +62,42 @@ app.post('/api/login', (req, res) => {
 
 // Contact Us Endpoint 
 app.post('/api/contact', (req, res) => {
-    const { name, email, message } = req.body;
-    if (!name || !email || !message) {
-      return res.status(400).json({ message: 'All fields are required' });
+  const { name, email, message } = req.body;
+  if (!name || !email || !message) {
+    return res.status(400).json({ message: 'All fields are required' });
+  }
+
+  const sql = 'INSERT INTO messages (name, email, message) VALUES (?, ?, ?)';
+  db.query(sql, [name, email, message], (err, result) => {
+    if (err) {
+      console.error('Mesaj gönderme hatası:', err);
+      return res.status(500).json({ message: 'Error sending message' });
     }
-  
-    const sql = 'INSERT INTO messages (name, email, message) VALUES (?, ?, ?)';
-    db.query(sql, [name, email, message], (err, result) => {
-      if (err) {
-        console.error('Mesaj gönderme hatası:', err);
-        return res.status(500).json({ message: 'Error sending message' });
-      }
-      res.status(201).json({ message: 'Message sent successfully' });
+    res.status(201).json({ message: 'Message sent successfully' });
+  });
+});
+
+// User Endpoint
+app.get('/api/user', (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1]; // Bearer token
+  if (!token) return res.status(401).json({ message: 'No token provided' });
+
+  jwt.verify(token, JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(401).json({ message: 'Invalid token' });
+
+    const sql = 'SELECT full_name, email FROM users WHERE id = ?';
+    db.query(sql, [decoded.id], (err, results) => {
+      if (err) return res.status(500).json({ message: 'Error fetching user' });
+      if (results.length === 0) return res.status(404).json({ message: 'User not found' });
+      res.json(results[0]);
     });
   });
+});
 
-
-  //"Login" Yapıldıktan Sonra "Cart" ve "Checkout"ta Kullanıcının Bilgileri (İsim ve Email) Gösterilsin
-
-  app.get('/api/user', (req, res) => {
-    const token = req.headers.authorization?.split(' ')[1]; // Bearer token
-    if (!token) return res.status(401).json({ message: 'No token provided' });
-  
-    jwt.verify(token, JWT_SECRET, (err, decoded) => {
-      if (err) return res.status(401).json({ message: 'Invalid token' });
-  
-      const sql = 'SELECT full_name, email FROM users WHERE id = ?';
-      db.query(sql, [decoded.id], (err, results) => {
-        if (err) return res.status(500).json({ message: 'Error fetching user' });
-        if (results.length === 0) return res.status(404).json({ message: 'User not found' });
-        res.json(results[0]);
-      });
-    });
-  });
+// Tüm istemci rotalarını index.html'e yönlendirme
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
