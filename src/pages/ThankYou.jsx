@@ -1,4 +1,4 @@
-// src/pages/ThankYou.js
+// src/pages/ThankYou.jsx
 import React from "react";
 import { Navbar, Footer } from "../components";
 import { useLocation } from "react-router-dom";

@@ -16,17 +16,17 @@ Start the server
 ![Home Page](screenshots/home.png)
 ![Products Page](screenshots/products.png)
 ![Login Page](screenshots/login.png)
-![Register Page](screenshots/register.png)
-![Cart Page](screenshots/cart.png)
-![Checkout Page](screenshots/checkout.png)
-![About Page](screenshots/about.png)
-![Contact Page](screenshots/contact.png)
+![Register Page](screenshots/registerp.png)
+![Cart Page](screenshots/cartp.png)
+![Checkout Page](screenshots/checkoutp.png)
+![About Page](screenshots/aboutP.png)
+![Contact Page](screenshots/contactp.png)
 
 ## Published Application
-- Front-End: [https://shopstory-frontend.vercel.app](https://shopstory-frontend.vercel.app)
+- Front-End: [https://myshopstory.azurewebsites.net/](https://myshopstory.azurewebsites.net/)
 
 ## Back-End Application/API
-- Back-End: [https://shopstory-backend.herokuapp.com](https://shopstory-backend.herokuapp.com)
+- Back-End: [https://github.com/yasinSahyar/My-Shopstory/tree/checkout/backend](https://github.com/yasinSahyar/My-Shopstory/tree/checkout/backend)
 
 ## API Documentation
 - [API Documentation](https://documenter.getpostman.com/view/12345/your-api) (Create using Postman or similar tool)
