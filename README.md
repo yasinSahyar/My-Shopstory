@@ -28,8 +28,6 @@ Start the server
 ## Back-End Application/API
 - Back-End: [https://github.com/yasinSahyar/My-Shopstory/tree/checkout/backend](https://github.com/yasinSahyar/My-Shopstory/tree/checkout/backend)
 
-## API Documentation
-- [API Documentation](https://documenter.getpostman.com/view/12345/your-api) (Create using Postman or similar tool)
 
 ## Database Description
 - **Database Name**: `shopstory_db`
@@ -39,6 +37,15 @@ Start the server
   - `email` (VARCHAR(255), UNIQUE, NOT NULL)
   - `password` (VARCHAR(255), NOT NULL)
   - `created_at` (TIMESTAMP, DEFAULT CURRENT_TIMESTAMP)
+
+- **Table**: `messages` 
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `message` text NOT NULL,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  
+
 
 ## Functionalities Implemented
 - User registration and login with MySQL database integration.

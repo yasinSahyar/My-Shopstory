@@ -81,7 +81,7 @@ const Checkout = () => {
       });
     };
 
-    let subtotal = 0;
+    let subtotal = 0; 
     let shipping = 30.0;
     let totalItems = 0;
     state.map((item) => {
